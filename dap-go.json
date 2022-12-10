@@ -1,0 +1,14 @@
+{
+  "Custom config": {
+    "type": "go",
+    "name": "Debug custom",
+    "request": "launch",
+    "program": "${file}",
+    "args": ["--foo", "bar"],
+    "options": {
+      "env": {
+        "FOO": "bar"
+      }
+    }
+  }
+}

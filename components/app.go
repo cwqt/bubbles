@@ -7,7 +7,7 @@ import (
 	lipgloss "github.com/charmbracelet/lipgloss"
 )
 
-type appModel struct {
+type appState struct {
 }
 
 var Wrapper = lipgloss.NewStyle().
@@ -15,12 +15,16 @@ var Wrapper = lipgloss.NewStyle().
 	// BorderForeground(lipgloss.Color(Style.DarkGray))
 
 func App(props *UI.Props) *UI.Component {
-	m := appModel{}
+	state := appState{}
 
-	// props.Logger.Info("Hello World!")
+	props.Logger.Info("Hello World!")
+	props.Logger.Info("Hello World!")
+	props.Logger.Info("Hello World!")
+	props.Logger.Info("Hello World!")
+	props.Logger.Info("Hello World!")
 
 	return &UI.Component{
-		Model: m,
+		State: state,
 		Init:  props.Outlet.Init,
 		Update: func(msg tea.Msg) tea.Cmd {
 			cmds := UI.Cmds()

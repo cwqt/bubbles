@@ -8,42 +8,42 @@ import (
 )
 
 type Post struct {
-  id string
-  title string
+	id    string
+	title string
 }
 
-type postsModel struct {
-  posts []Post
+type postsState struct {
+	posts []Post
 }
 
 func Posts(props *UI.Props) *UI.Component {
-  m := postsModel{
-    posts: make([]Post, 0),
-  }
+	state := postsState{
+		posts: make([]Post, 0),
+	}
 
-  m.posts = append(m.posts, Post{
-    id: "hello-world", 
-    title: "Hello world this is my first post",
-  }, Post{
-    id: "another-post", 
-    title: "This is the second post",
-  })
+	state.posts = append(state.posts, Post{
+		id:    "hello-world",
+		title: "Hello world this is my first post",
+	}, Post{
+		id:    "another-post",
+		title: "This is the second post",
+	})
 
 	return &UI.Component{
-		Init: func() tea.Cmd {
+		Init: func(logger *UI.Logger) tea.Cmd {
 			return nil
 		},
 		Update: func(msg tea.Msg) tea.Cmd {
 			return nil
 		},
 		View: func(width int) string {
-      s := ""
+			s := ""
 
-      for i, post := range m.posts {
-        s += fmt.Sprintln(i, post.id, post.title)
-      }
+			for i, post := range state.posts {
+				s += fmt.Sprintln(i, post.id, post.title)
+			}
 
-      return s
+			return s
 		},
 		Destroy: func() {},
 	}

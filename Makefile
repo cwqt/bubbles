@@ -3,3 +3,5 @@ build:
 
 run:
 	go run main.go
+
+main:

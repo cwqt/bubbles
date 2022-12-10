@@ -1,21 +1,26 @@
-package ui
+package UI
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type outletModel struct {
+type outletState struct {
 	active map[string]*Component
+	logger *Logger
 }
 
-func CreateOutlet(routing RoutingTable, paths *[]string, depth int) *Component {
-	m := outletModel{
+type Render struct{}
+
+func CreateOutlet(routes Routes, paths *[]string, depth int) *Component {
+	state := outletState{
 		active: map[string]*Component{},
 	}
 
 	return &Component{
-		Model: &m,
-		Init: func() tea.Cmd {
+		State: &state,
+		Init: func(logger *Logger) tea.Cmd {
+			state.logger = logger
+
 			return func() tea.Msg {
 				return Render{}
 			}
@@ -26,22 +31,23 @@ func CreateOutlet(routing RoutingTable, paths *[]string, depth int) *Component {
 			if 0 < len(*paths) && depth < len(*paths) {
 				head := (*paths)[depth]
 
-				if route, ok := m.active[head]; ok {
+				if route, ok := state.active[head]; ok {
 					cmds.Append(route.Update(msg))
 				} else {
-					for path, route := range m.active {
+					for path, route := range state.active {
 						if path != head {
 							route.Destroy()
-							delete(m.active, path)
+							delete(state.active, path)
 						}
 					}
 
-					if route, ok := routing[head]; ok {
-						m.active[head] = route.Create(&Props{
+					if route, ok := routes[head]; ok {
+						state.active[head] = route.Component(&Props{
 							Outlet: CreateOutlet(route.Children, paths, depth+1),
+							Logger: *state.logger,
 						})
 
-						cmds.Append(m.active[head].Init())
+						cmds.Append(state.active[head].Init(state.logger))
 					}
 				}
 			}
@@ -52,7 +58,7 @@ func CreateOutlet(routing RoutingTable, paths *[]string, depth int) *Component {
 			s := ""
 
 			for _, path := range *paths {
-				if component, ok := m.active[path]; ok {
+				if component, ok := state.active[path]; ok {
 					s += component.View(width)
 				}
 			}
@@ -60,7 +66,7 @@ func CreateOutlet(routing RoutingTable, paths *[]string, depth int) *Component {
 			return s
 		},
 		Destroy: func() {
-			for _, component := range m.active {
+			for _, component := range state.active {
 				component.Destroy()
 			}
 		},

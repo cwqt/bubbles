@@ -1,18 +1,16 @@
-package ui
+package UI
 
-import ()
-
-type RoutingTable map[string]Route
+type Routes map[string]Route
 
 type Route struct {
-	Create   func(props *Props) *Component
-	Children RoutingTable
+	Component FC
+	Children  Routes
 }
 
 // Private to Create() closure -- its internal model
 type routerModel struct {
-	Path   []string     // active router path
-	Routes RoutingTable // routing structure with factory functions
+	Path   []string // active router path
+	Routes Routes   // routing structure with factory functions
 }
 
 // Public methods
@@ -22,12 +20,12 @@ type Router struct {
 	Outlet   *Component // the root outlet
 }
 
-type RouteChangeMsg struct {
+type RouteChange struct {
 	Path []string
 }
 
 // Router instance -- one per Program
-func CreateRouter(routes RoutingTable, initialPath []string) Router {
+func CreateRouter(routes Routes, initialPath []string) Router {
 	router := routerModel{
 		Path:   make([]string, 0),
 		Routes: routes,
