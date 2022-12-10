@@ -25,9 +25,17 @@ func App(props *UI.Props) *UI.Component {
 
 	return &UI.Component{
 		State: state,
-		Init:  props.Outlet.Init,
+		Init: func() tea.Cmd {
+			return props.Outlet.Init(&props.Logger)
+		},
 		Update: func(msg tea.Msg) tea.Cmd {
 			cmds := UI.Cmds()
+
+			switch msg := msg.(type) {
+			case tea.KeyMsg:
+				props.Logger.Important(msg.String())
+			}
+
 			cmds.Append(props.Outlet.Update(msg))
 			return cmds.AsCmd()
 		},

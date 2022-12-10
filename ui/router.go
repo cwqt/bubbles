@@ -17,7 +17,7 @@ type routerModel struct {
 type Router struct {
 	GetPath  func() *[]string
 	Navigate func(paths ...string)
-	Outlet   *Component // the root outlet
+	Outlet   *Outlet // the root outlet
 }
 
 type RouteChange struct {

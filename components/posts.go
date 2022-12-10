@@ -21,6 +21,7 @@ func Posts(props *UI.Props) *UI.Component {
 		posts: make([]Post, 0),
 	}
 
+	// TODO: figure out how to source these?
 	state.posts = append(state.posts, Post{
 		id:    "hello-world",
 		title: "Hello world this is my first post",
@@ -30,7 +31,7 @@ func Posts(props *UI.Props) *UI.Component {
 	})
 
 	return &UI.Component{
-		Init: func(logger *UI.Logger) tea.Cmd {
+		Init: func() tea.Cmd {
 			return nil
 		},
 		Update: func(msg tea.Msg) tea.Cmd {

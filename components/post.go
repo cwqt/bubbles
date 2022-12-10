@@ -9,7 +9,7 @@ func PostComponent(postId string) UI.FC {
 	return func(props *UI.Props) *UI.Component {
 
 		return &UI.Component{
-			Init: func(logger *UI.Logger) tea.Cmd {
+			Init: func() tea.Cmd {
 				return nil
 			},
 			Update: func(msg tea.Msg) tea.Cmd {

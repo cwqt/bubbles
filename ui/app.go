@@ -8,9 +8,10 @@ import (
 
 type appState struct {
 	router *Router
-	outlet *Component
+	outlet *Outlet
 	logger *Logger
 	logs   *Component
+	bus    *Bus
 }
 
 func CreateApp(router *Router) appState {
@@ -39,6 +40,7 @@ func CreateApp(router *Router) appState {
 		outlet: router.Outlet,
 		logger: logger,
 		logs:   CreateLogger(&bus),
+		bus:    &bus,
 	}
 }
 
@@ -46,37 +48,37 @@ func (state appState) Init() tea.Cmd {
 	return state.outlet.Init(state.logger)
 }
 
-func (m appState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (state appState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	// All route change messages bubble up to this point
 	case RouteChange:
-		m.router.Navigate(msg.Path...)
+		state.router.Navigate(msg.Path...)
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "backspace":
-			return m, func() tea.Msg {
+			return state, func() tea.Msg {
 				return RouteChange{
 					Path: []string{"index", "menu"},
 				}
 			}
 		case "ctrl+c", "q":
-			return m, tea.Quit
+			return state, tea.Quit
 		}
 	}
 
 	cmds := Cmds()
-	cmds.Append(m.logs.Update(msg))
-	cmds.Append(m.outlet.Update(msg))
+	cmds.Append(state.logs.Update(msg))
+	cmds.Append(state.outlet.Update(msg))
 
-	return m, cmds.AsCmd()
+	return state, cmds.AsCmd()
 }
 
-func (m appState) View() string {
+func (state appState) View() string {
 	s := ""
 
 	// Show the current routing path
 	s += "[ "
-	path := *m.router.GetPath()
+	path := *state.router.GetPath()
 	for index, segment := range path {
 		s += segment
 		if index != len(path)-1 {
@@ -86,8 +88,8 @@ func (m appState) View() string {
 		}
 	}
 
-	s += m.outlet.View(PROGRAM_WIDTH)
-	s += m.logs.View(PROGRAM_WIDTH)
+	s += state.outlet.View(PROGRAM_WIDTH)
+	s += state.logs.View(PROGRAM_WIDTH)
 
 	return s
 }

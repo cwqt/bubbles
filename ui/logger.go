@@ -55,25 +55,25 @@ func CreateLogger(bus *Bus) *Component {
 	})
 
 	return &Component{
-		Init: func(logger *Logger) tea.Cmd {
+		Init: func() tea.Cmd {
 			return nil
 		},
 		Update: func(msg tea.Msg) tea.Cmd {
 			return nil
 		},
 		View: func(width int) string {
-			s := "\n"
+			v := "\n"
 
 			if len(state.logs) == 0 {
-				s += "No logs (yet)"
+				v += "No logs (yet)"
 			} else {
 				// Add all logs onto s, reverse order: newest at top
 				for i := len(state.logs) - 1; i >= 0; i-- {
-					s += fmt.Sprintf("%s\n", state.logs[i])
+					v += fmt.Sprintf("%s\n", state.logs[i])
 				}
 			}
 
-			return s
+			return v
 		},
 		Destroy: func() {
 			unsubscribe()

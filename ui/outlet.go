@@ -11,12 +11,12 @@ type outletState struct {
 
 type Render struct{}
 
-func CreateOutlet(routes Routes, paths *[]string, depth int) *Component {
+func CreateOutlet(routes Routes, paths *[]string, depth int) *Outlet {
 	state := outletState{
 		active: map[string]*Component{},
 	}
 
-	return &Component{
+	return &Outlet{
 		State: &state,
 		Init: func(logger *Logger) tea.Cmd {
 			state.logger = logger
@@ -47,7 +47,7 @@ func CreateOutlet(routes Routes, paths *[]string, depth int) *Component {
 							Logger: *state.logger,
 						})
 
-						cmds.Append(state.active[head].Init(state.logger))
+						cmds.Append(state.active[head].Init())
 					}
 				}
 			}
